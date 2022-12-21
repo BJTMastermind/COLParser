@@ -1,0 +1,9 @@
+# Compiled class file
+*.class
+
+# Misc files
+/bin/
+*.directory
+
+# Package Files #
+*.jar
