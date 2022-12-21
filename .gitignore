@@ -3,6 +3,7 @@
 
 # Misc files
 /bin/
+/.vscode/
 *.directory
 
 # Package Files #
