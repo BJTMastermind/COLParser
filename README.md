@@ -34,7 +34,7 @@ Sky_FrozenOcean | #80A1FF
 
 * Java 8
 
-## COL File Format
+## COL File Format (Might Be Inaccurate)
 
 ### Byte Order
 
