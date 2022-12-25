@@ -17,6 +17,13 @@ COLFile colFile = parser.parse();
 for (String color : colFile.getColors().keySet()) {
     System.out.println(color+" | "+colFile.getColors().get(color));
 }
+for (String color : colFile.getWaterColors().keySet()) {
+    System.out.print(color+" | ");
+    for (int i = 0; i < 3; i++) {
+        System.out.print(COLFile.toHex(colFile.getWaterColors().get(color)[i])+" ");
+    }
+    System.out.println("");
+}
 ```
 
 Output
@@ -27,14 +34,20 @@ Grass_FrozenOcean | #80B497
 Foliage_Evergreen | #619961
 Water_FrozenRiver | #FFFFFF
 Sky_FrozenOcean | #80A1FF
-...
+... // Rest of Colors
+default | #800089CA #00007CB7 #0000000F 
+plains | #A544AFF5 #0044AFF5 #0000000F 
+desert | #A532A598 #0032A598 #0000000F 
+mega_spruce_taiga_mutated | #A52D6D77 #002D6D77 #0000000F 
+cold_ocean | #A52080C9 #0014559B #0000003C
+... // Rest of Water Colors
 ```
 
 ## Minimum Java Version
 
 * Java 8
 
-## COL File Format (Might Be Inaccurate)
+## COL File Format
 
 ### Byte Order
 
@@ -44,14 +57,29 @@ The COL file format is stored with **Little Endian** byte order.
 
 | Name | Size (in bytes) | Description |
 | - | - | - |
-| ColorCount (Long) | 8 | The number of colors in this col file |
+| HasWaterColors (Int) | 4 | If this col file has the biomes water colors |
+| ColorCount (Int) | 4 | The number of colors in this col file |
 
 Now loop the next section `ColorCount` times until you have parsed all colors in the file.
 
 | Name | Size (in bytes) | Description |
 | - | - | - |
-| null termination | 1 | `00` byte indicating the end of a color |
-| NameLength (Byte) | 1 | The length of this colors name |
+| NameLength (Short) | 2 | The length of this colors name |
 | Name (String) | Variable | The name of this color. Size is the result of Name Length |
-| null termination | 1 | `00` byte indicating the end of `Name` |
-| TheColor | 3 | The Hex color value for this color |
+| TheColor | 4 | The Hex ARGB color value for this color |
+
+After all Colors are parsed if `HasWaterColor` is greater then 0 follow the next section
+
+| Name | Size (in bytes) | Description |
+| - | - | - |
+| WaterColorCount (Int) | 4 | The number of water colors in this col file |
+
+Now loop the next section `WaterColorCount` times just like before but now each color has 3 values with it.
+
+| Name | Size (in bytes) | Description |
+| - | - | - |
+| NameLength (Short) | 2 | The length of this colors name |
+| Name (String) | Variable | The name of this color. Size is the result of Name Length |
+| WaterSurfaceColor | 4 | The Hex ARGB color value for the water surface color |
+| UnderwaterColor | 4 | The Hex ARGB color value for the underwater color |
+| UnderwaterFogColor | 4 | The Hex ARGB color value for the underwater fog color |
