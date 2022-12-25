@@ -7,11 +7,18 @@ import me.bjtmastermind.colparser.Parser;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Parser parser = new Parser(new File("/home/bjtmastermind/Desktop/City Texture Pack/x32/colours.col"));
+        Parser parser = new Parser(new File("path/to/colours.col"));
         COLFile colFile = parser.parse();
 
         for (String color : colFile.getColors().keySet()) {
-            System.out.println(color+" | "+colFile.getColors().get(color));
+            System.out.println(color+" | "+COLFile.toHex(colFile.getColors().get(color)));
+        }
+        for (String color : colFile.getWaterColors().keySet()) {
+            System.out.print(color+" | ");
+            for (int i = 0; i < 3; i++) {
+                System.out.print(COLFile.toHex(colFile.getWaterColors().get(color)[i])+" ");
+            }
+            System.out.println("");
         }
     }
 }

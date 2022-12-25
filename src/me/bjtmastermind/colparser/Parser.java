@@ -20,29 +20,38 @@ public class Parser {
 
     public COLFile parse() throws IOException {
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
-        colFile.setColorCount(buffer.getLong());
-        while (buffer.position() < bytes.length) {
-            if(buffer.get() != 0x00) {
-                throw new IOException("Expected null termination byte '00' at position "+(buffer.position() - 1)+
-                    " but found byte '"+String.format("%02X", buffer.get(buffer.position() - 1))+"'. Not a vaild COL file.");
-            }
 
-            int nameSize = buffer.get();
+        int hasWaterColors = buffer.order(ByteOrder.BIG_ENDIAN).getInt();
+        int colorCount = buffer.order(ByteOrder.BIG_ENDIAN).getInt();
+        colFile.setColorCount(colorCount);
+
+        for (int i = 0; i < colorCount; i++) {
+            short nameSize = buffer.getShort();
 
             byte[] nameAsBytes = new byte[nameSize];
             buffer.get(nameAsBytes, 0, nameSize);
             String name = ByteUtils.bytesToString(nameAsBytes);
 
-            if(buffer.get() != 0x00) {
-                throw new IOException("Expected null termination byte '00' at position "+(buffer.position() - 1)+
-                    " but found byte '"+String.format("%02X", buffer.get(buffer.position() - 1))+"'. Not a vaild COL file.");
+            int color = buffer.getInt();
+
+            colFile.addColor(name, color);
+        }
+
+        if (hasWaterColors > 0) {
+            int waterColorCount = buffer.order(ByteOrder.BIG_ENDIAN).getInt();
+            for (int i = 0; i < waterColorCount; i++) {
+                short nameSize = buffer.getShort();
+
+                byte[] nameAsBytes = new byte[nameSize];
+                buffer.get(nameAsBytes, 0, nameSize);
+                String name = ByteUtils.bytesToString(nameAsBytes);
+
+                int[] colors = new int[3];
+                for (int j = 0; j < 3; j++) {
+                    colors[j] = buffer.getInt();
+                }
+                colFile.addWaterColor(name, colors);
             }
-
-            byte[] hexColorAsBytes = new byte[3];
-            buffer.get(hexColorAsBytes, 0, 3);
-            String hexColor = ByteUtils.bytesToHexString(hexColorAsBytes);
-
-            colFile.addColor(name, hexColor);
         }
         return colFile;
     }
