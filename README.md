@@ -6,9 +6,9 @@ A small Java library for parsing .col files used by Minecraft: Legacy Console Ed
 
 * Download `COLParser.jar` from the [Releases](https://github.com/BJTMastermind/COLParser/releases) tab.
 * Add the library into your project.
-* Import `me.bjtmastermind.colparser.Parser` and `me.bjtmastermind.colparser.COLFile` to use.
+* Import `me.bjtmastermind.colparser.Parser and/or Assembler` and `me.bjtmastermind.colparser.COLFile` to use.
 
-Example Code
+Example Code (Parsing)
 
 ```java
 Parser parser = new Parser(new File("path/to/colours.col"));
@@ -42,6 +42,15 @@ mega_spruce_taiga_mutated | #A52D6D77 #002D6D77 #0000000F
 cold_ocean | #A52080C9 #0014559B #0000003C
 ... // Rest of Water Colors
 ```
+
+Example Code (Assembling)
+
+```
+Assembler assembler = new Assembler(colFile); // Pass in COLFile object.
+assembler.assemble("path/to/new_colours.col");
+```
+
+Output: Generates new .col file in specified location
 
 ## Minimum Java Version
 
