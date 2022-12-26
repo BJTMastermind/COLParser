@@ -49,6 +49,10 @@ public class COLFile {
         return this.colorCount;
     }
 
+    public boolean hasWaterColors() {
+        return this.getWaterColorCount() > 0;
+    }
+
     public int getWaterColorCount() {
         return this.waterColorCount;
     }

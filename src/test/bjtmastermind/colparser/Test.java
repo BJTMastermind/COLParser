@@ -2,6 +2,7 @@ package test.bjtmastermind.colparser;
 
 import java.io.File;
 
+import me.bjtmastermind.colparser.Assembler;
 import me.bjtmastermind.colparser.COLFile;
 import me.bjtmastermind.colparser.Parser;
 
@@ -20,5 +21,8 @@ public class Test {
             }
             System.out.println("");
         }
+
+        Assembler assembler = new Assembler(colFile);
+        assembler.assemble("path/to/new_colours.col");
     }
 }
