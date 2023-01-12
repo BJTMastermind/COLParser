@@ -12,7 +12,7 @@ Example Code (Parsing)
 
 ```java
 COLFile colFile = new COLFile();
-colFile.parse(new File("path/to/colours.col"));
+colFile.parse("path/to/colours.col");
 
 System.out.println(colFile.printColors());
 System.out.println(colFile.printWaterColors());
@@ -21,11 +21,11 @@ System.out.println(colFile.printWaterColors());
 Output
 
 ```
-Mob_Zombie_Colour1 | #00AFAF
-Grass_FrozenOcean | #80B497
-Foliage_Evergreen | #619961
-Water_FrozenRiver | #FFFFFF
-Sky_FrozenOcean | #80A1FF
+Mob_Zombie_Colour1 | #0000AFAF
+Grass_FrozenOcean | #0080B497
+Foliage_Evergreen | #00619961
+Water_FrozenRiver | #00FFFFFF
+Sky_FrozenOcean | #0080A1FF
 ... // Rest of Colors
 default | #800089CA #00007CB7 #0000000F
 plains | #A544AFF5 #0044AFF5 #0000000F
@@ -53,4 +53,4 @@ Output: Generates new .col file in specified location
 
 ## COL File Format
 
-* See [COL_File_Format.md](https://github.com/BJTMastermind/COLParser/blob/main/COL_File_Format.md)
+* See [COL_File_Format.md](./COL_File_Format.md)
