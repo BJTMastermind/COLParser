@@ -15,8 +15,9 @@ This library was made in Java 8 for Java 8 and newer.
 
 | Constructor and Description |
 | - |
-| COLFile()<br>Constructs a new COLFile with a|
-| COLFile(LinkedHashMap\<String, Integer\> colors, LinkedHashMap\<String, int[]\> waterColors)<br>Constructs a new COLFile with the colors and waterColors specified. |
+| COLFile()<br>Constructs a new COLFile without colors or waterColors specified. |
+| COLFile(LinkedHashMap\<String, Integer\> colors)<br>Constructs a new COLFile with the colors specified but without waterColors specified. |
+| COLFile(LinkedHashMap\<String, Integer\> colors, LinkedHashMap\<String, int[]\>  waterColors)<br>Constructs a new COLFile with the colors and waterColors specified. |
 
 ### Method Summary
 
@@ -34,5 +35,5 @@ This library was made in Java 8 for Java 8 and newer.
 | COLFile | setColors(LinkedHashMap\<String, Integer\> colors)<br>Replaces the current color set with a new color set. |
 | COLFile | setWaterColors(LinkedHashMap\<String, int[]\> colors)<br>Replaces the current water color set with a new water color set. |
 | static LinkedList\<Integer\> | toARGB(int color)<br>Converts the given color to an RGB color formated [Alpha, Red, Green, Blue]. |
-| static String | toARGBHex(int color)<br>Converts the given color to an RGB hex color formated #AARRGGBB. |
+| static String | toARGBHex(int color)<br>Converts the given color to an RGB hex color formatted #AARRGGBB. |
  
