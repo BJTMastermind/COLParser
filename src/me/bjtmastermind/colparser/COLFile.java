@@ -1,5 +1,7 @@
 package me.bjtmastermind.colparser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,6 +20,10 @@ public class COLFile {
     public COLFile() {
         this.colors = new LinkedHashMap<>();
         this.waterColors = new LinkedHashMap<>();
+    }
+
+    public COLFile(LinkedHashMap<String, Integer> colors) {
+        this(colors, new LinkedHashMap<String, int[]>());
     }
 
     public COLFile(LinkedHashMap<String, Integer> colors, LinkedHashMap<String, int[]> waterColors) {
@@ -40,32 +46,32 @@ public class COLFile {
     }
 
     public void assemble(String outputFilepath) {
-        LinkedList<Byte> rawOutput = new LinkedList<>();
+        DataOutputStream rawOutput = new DataOutputStream(new ByteArrayOutputStream());
 
-        Utils.addIntToBuffer(rawOutput, this.hasWaterColors() ? 1 : 0);
-        Utils.addIntToBuffer(rawOutput, this.getColorCount());
+        try {
+            rawOutput.writeInt(this.hasWaterColors() ? 1 : 0);
+            rawOutput.writeInt(this.getColorCount());
 
-        for (String color : this.getColors().keySet()) {
-            Utils.addShortToBuffer(rawOutput, (short) color.length());
-            Utils.addStringToBuffer(rawOutput, color);
-            Utils.addIntToBuffer(rawOutput, this.getColors().get(color));
-        }
+            for (String color : this.getColors().keySet()) {
+                rawOutput.writeShort((short) color.length());
+                rawOutput.writeUTF(color);
+                rawOutput.writeInt(this.getColors().get(color));
+            }
 
-        if (this.hasWaterColors()) {
-            Utils.addIntToBuffer(rawOutput, this.getWaterColorCount());
-            for (String waterColor : this.getWaterColors().keySet()) {
-                Utils.addShortToBuffer(rawOutput, (short) waterColor.length());
-                Utils.addStringToBuffer(rawOutput, waterColor);
+            if (this.hasWaterColors()) {
+                rawOutput.writeInt(this.getWaterColorCount());
+                for (String waterColor : this.getWaterColors().keySet()) {
+                    rawOutput.writeShort((short) waterColor.length());
+                    rawOutput.writeUTF(waterColor);
 
-                for (int i = 0; i < 3; i++) {
-                    Utils.addIntToBuffer(rawOutput, this.getWaterColors().get(waterColor)[i]);
+                    for (int i = 0; i < 3; i++) {
+                        rawOutput.writeInt(this.getWaterColors().get(waterColor)[i]);
+                    }
                 }
             }
-        }
 
-        File output = new File(outputFilepath);
-        try {
-            Files.write(output.toPath(), Utils.listToArray(rawOutput));
+            File output = new File(outputFilepath);
+            Files.write(output.toPath(), Utils.dataOutputStreamToArray(rawOutput));
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -102,11 +108,7 @@ public class COLFile {
 
         for (int i = 0; i < colorCount; i++) {
             short nameSize = buffer.getShort();
-
-            byte[] nameAsBytes = new byte[nameSize];
-            buffer.get(nameAsBytes, 0, nameSize);
-            String name = Utils.bytesToString(nameAsBytes);
-
+            String name = Utils.getString(buffer, nameSize);
             int color = buffer.getInt();
 
             this.addColor(name, color);
@@ -117,10 +119,7 @@ public class COLFile {
             this.waterColorCount = waterColorCount;
             for (int i = 0; i < waterColorCount; i++) {
                 short nameSize = buffer.getShort();
-
-                byte[] nameAsBytes = new byte[nameSize];
-                buffer.get(nameAsBytes, 0, nameSize);
-                String name = Utils.bytesToString(nameAsBytes);
+                String name = Utils.getString(buffer, nameSize);
 
                 int[] colors = new int[3];
                 for (int j = 0; j < 3; j++) {
@@ -186,10 +185,7 @@ public class COLFile {
 
     // TODO: Remove static and figure out how to convert color output of `colors` and `waterColors` to Hex without wrapping in this current method.
     public static String toARGBHex(int color) {
-        String result = Integer.toHexString(color).toUpperCase();
-        while (result.length() < 8) {
-            result = "0" + result;
-        }
+        String result = String.format("%08X", color);
         return "#" + result;
     }
 }
